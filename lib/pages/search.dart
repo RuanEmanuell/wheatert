@@ -1,29 +1,44 @@
+import 'dart:async';
 import "package:flutter/material.dart";
-import "../main.dart";
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_mobx/flutter_mobx.dart';
+import "../main.dart";
 import "../stores/appdata.dart";
+import 'package:geolocator/geolocator.dart';
+
 
 final appData=AppData();
 
 bool dataLoaded=false;
 bool loading=false;
 
-final myController=TextEditingController();
+String apikey="INSERT YOUR OPEN WHEATER API KEY HERE";
+
+var lat;
+var lon;
+
+
+
+Future getLocation() async{
+  LocationPermission permission=await Geolocator.requestPermission();
+  Position position=await Geolocator.getCurrentPosition(
+    desiredAccuracy: LocationAccuracy.high
+  );
+  lat=position.latitude;
+  lon=position.longitude;
+}
+
 
 
 Future getData() async{
-  http.Response response=await http.get(Uri.parse("https://api.openweathermap.org/data/2.5/weather?q=${myController.text}&units=metric&lang=pt_br&appid=e2f1e6118e15e3bd5df31fcd07c3bdfa"));
+  http.Response response=await http.get(Uri.parse("https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apikey}&units=metric"));
 
   if(response.statusCode==200){
     appData.data=response.body;
-    print(appData.data);
     appData.data=jsonDecode(appData.data);
-  }else{
-    print(response.statusCode);
-  }
 
+  }
 
 }
 
@@ -37,22 +52,52 @@ class _SearchScreen extends State<SearchScreen>{
 
 
   var tempColor=Color.fromARGB(255, 73, 73, 73);
+
+  void initState(){
+    super.initState();
+
+    setState((){
+      dataLoaded=false;
+      loading=true;
+    });
+
+    getLocation();
+
+
+    Future.delayed(Duration(seconds: 5),(){
+      getData();
+    });
+
+
+     Future.delayed(Duration(seconds:7),(){
+      setState((){
+      loading=false;
+      dataLoaded=true;
+
+      appData.data["main"]["temp"]<=14.99 ? tempColor=Color.fromARGB(255, 152, 197, 255):tempColor;
+      appData.data["main"]["temp"]>15 ?tempColor=Color.fromARGB(255, 90, 159, 248):tempColor;
+      appData.data["main"]["temp"]>25 ? tempColor=Color.fromARGB(255, 253, 186, 0):tempColor;
+      appData.data["main"]["temp"]>32 ? tempColor=Color.fromARGB(255, 255, 123, 0):tempColor;
+
+      });
+     });
+
+  
+
+
+  
+    
+  }
    
 
   @override
   Widget build(BuildContext context){
+
+    double height=MediaQuery.of(context).size.height;
+
     return Scaffold(
-      appBar:AppBar(
-        backgroundColor: tempColor,
-        elevation:0,
-        leading:IconButton(
-          icon:Icon(Icons.arrow_back, color:Colors.white, size:40),
-          onPressed:(){
-            Navigator.pop(context);
-          }
-        )
-      ),
-      body:Container(
+      body:AnimatedContainer(
+        duration:Duration(seconds: 1),
         color:tempColor,
         child:Center(
           child:Column(
@@ -60,10 +105,25 @@ class _SearchScreen extends State<SearchScreen>{
               dataLoaded ? Column(
               children:[
               Container(
-              margin:EdgeInsets.only(left: 50),
+              margin:EdgeInsets.only(left: 50, top:50),
               child:Row(
               children: [
-                Text(appData.data["name"], style:TextStyle(
+                Text("${appData.data["main"]["temp"].toStringAsFixed(0)}°C", style:TextStyle(
+                color:Colors.white,
+                fontSize:80
+              )),
+                Container(
+                margin:EdgeInsets.only(left: 55),
+                child:Image.network("http://openweathermap.org/img/wn/${appData.data["weather"][0]["icon"]}@2x.png")
+                )
+               ]
+              )
+              ),
+              Container(
+              margin:EdgeInsets.only(left:60, bottom:height-300),
+              child:Row(
+                children:[
+                 Text(appData.data["name"], style:TextStyle(
                 fontSize:30,
                 color:Colors.white
                  ) 
@@ -72,65 +132,30 @@ class _SearchScreen extends State<SearchScreen>{
                 Text(appData.data["sys"]["country"], style:TextStyle(
                   color:Colors.white
                 )),
-                Container(width: 50),
-                 Image.network("http://openweathermap.org/img/wn/${appData.data["weather"][0]["icon"]}@2x.png")
-               ]
-              )
-              ),
-              Container(
-              margin:EdgeInsets.only(left:75),
-              child:Row(
-                children:[
-              Text("${appData.data["main"]["temp"].toStringAsFixed(0)}°C", style:TextStyle(
-                color:Colors.white,
-                fontSize:45
-              ))
                 ]
               )
+              ),
+              Column(
+              mainAxisSize: MainAxisSize.max,
+              children:[
+                Text("WheateRT", style:TextStyle(
+                fontSize:30,
+                color:Colors.white
+                 ) 
+                ),
+                Text("by Ruan Emanuell", style:TextStyle(
+                fontSize:20,
+                color:Colors.white
+                 ) 
+                ),
+              ]
               )
               ]
               ):Container(
-                margin:EdgeInsets.only(top: 30),
+                margin:EdgeInsets.only(top: height/2-20),
                 width:100,
                 height:100,
-                child: loading ? CircularProgressIndicator(
-                  color:Colors.white
-                ) : Text("")
-              ),
-              Container(height: 45),
-              SizedBox(
-              width:350,
-              child:TextField(
-                controller:myController,
-                decoration:InputDecoration(
-                  border:OutlineInputBorder(),
-                  hintText:"Search a city",
-                  contentPadding:EdgeInsets.all(20)
-                )
-               )
-              ),
-              Container(height: 15),
-              ElevatedButton(
-                style:ButtonStyle(
-                  backgroundColor:MaterialStateProperty.all(Colors.white)
-                ),
-                child:Text("Search", style:TextStyle(color: Colors.black)),
-                onPressed:(){
-                  if(myController.text!=""){
-                  setState((){
-                    dataLoaded=false;
-                    loading=true;
-                  });
-                  getData();
-                  Future.delayed(Duration(seconds:2), (){
-                     setState((){
-                      loading=false;
-                      dataLoaded=true;
-                      appData.data["main"]["temp"] < 15 ? tempColor=Colors.lightBlue : tempColor=Colors.orange;
-                      });
-                    });
-                }
-                }
+                child: loading ? CircularProgressIndicator(color:Colors.white) : Text("")
               )
             ]
           )

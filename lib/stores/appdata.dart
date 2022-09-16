@@ -8,5 +8,9 @@ class AppData=_AppData with _$AppData;
 abstract class _AppData with Store{
   @observable
   var data;
+  @observable
+  var lat;
+  @observable
+  var lon;
 }
 
