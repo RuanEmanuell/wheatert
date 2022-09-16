@@ -1,57 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'dart:async';
+import "dart:async";
+import 'package:http/http.dart' as http;
+import 'package:flutter_mobx/flutter_mobx.dart';
+import "../stores/appdata.dart";
+import "pages/home.dart";
+import "pages/search.dart";
+
 
 
 
 void main(){
   runApp(MaterialApp(
-    home:HomePage()
-    )
+    initialRoute:"/home",
+    routes:{
+      "/home":(context)=>HomeScreen(),
+      "/search":(context)=>SearchScreen()
+    }
+   )
   );
-}
-
-class HomePage extends StatefulWidget{
-  @override
-  _HomePage createState()=>_HomePage();
-}
-
-class _HomePage extends State<HomePage>{
-
-  bool changeColor=false;
-  bool bigger=false;
-  
-
-  void update(){
-    setState((){
-       changeColor=!changeColor;
-       bigger=!bigger;
-    });
-  }
-
-
-
-  @override
-  Widget build(BuildContext context){  
-
-    return Scaffold(
-      floatingActionButton:FloatingActionButton(
-        onPressed:(){
-         update();
-        }
-      ),
-      body:AnimatedContainer(
-        curve:Curves.bounceOut,
-        width:bigger?400:200,
-        height:bigger?400:200,
-        duration:Duration(milliseconds: 800),
-        decoration:BoxDecoration(
-           color:changeColor?Colors.red:Colors.blue,
-          borderRadius: BorderRadius.circular(20)
-        )
-      ),
-      
-
-    );
-  }
 }
