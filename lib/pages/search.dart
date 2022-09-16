@@ -69,7 +69,6 @@ class _SearchScreen extends State<SearchScreen>{
                  ) 
                 ),
                 Icon(Icons.location_on, color:Colors.white),
-
                 Text(appData.data["sys"]["country"], style:TextStyle(
                   color:Colors.white
                 )),
