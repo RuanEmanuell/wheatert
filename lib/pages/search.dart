@@ -14,7 +14,7 @@ final myController=TextEditingController();
 
 
 Future getData() async{
-  http.Response response=await http.get(Uri.parse("https://api.openweathermap.org/data/2.5/weather?q=${myController.text}&units=metric&lang=pt_br&appid=insertyourapikeyhere"));
+  http.Response response=await http.get(Uri.parse("https://api.openweathermap.org/data/2.5/weather?q=${myController.text}&units=metric&lang=pt_br&appid=e2f1e6118e15e3bd5df31fcd07c3bdfa"));
 
   if(response.statusCode==200){
     appData.data=response.body;
