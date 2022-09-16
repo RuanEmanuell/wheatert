@@ -14,7 +14,7 @@ final myController=TextEditingController();
 
 
 Future getData() async{
-  http.Response response=await http.get(Uri.parse("https://api.openweathermap.org/data/2.5/weather?q=${myController.text}&units=metric&lang=pt_br&appid=e2f1e6118e15e3bd5df31fcd07c3bdfa"));
+  http.Response response=await http.get(Uri.parse("https://api.openweathermap.org/data/2.5/weather?q=${myController.text}&units=metric&lang=pt_br&appid=insertyourapikeyhere"));
 
   if(response.statusCode==200){
     appData.data=response.body;
@@ -35,42 +35,89 @@ class SearchScreen extends StatefulWidget{
 
 class _SearchScreen extends State<SearchScreen>{ 
 
+
+  var tempColor=Color.fromARGB(255, 73, 73, 73);
    
 
   @override
   Widget build(BuildContext context){
     return Scaffold(
       appBar:AppBar(
-        backgroundColor:Colors.white,
+        backgroundColor: tempColor,
         elevation:0,
         leading:IconButton(
-          icon:Icon(Icons.arrow_back, color:Colors.black, size:40),
+          icon:Icon(Icons.arrow_back, color:Colors.white, size:40),
           onPressed:(){
             Navigator.pop(context);
           }
         )
       ),
       body:Container(
-        color:Colors.white,
+        color:tempColor,
         child:Center(
           child:Column(
             children:[
               dataLoaded ? Column(
               children:[
-              Text(appData.data["name"]),
-              Text(appData.data["sys"]["country"]),
-              Text("${appData.data["main"]["temp"].toStringAsFixed(0)}°C"),
-              Image.network("http://openweathermap.org/img/wn/${appData.data["weather"][0]["icon"]}@2x.png")
+              Container(
+              margin:EdgeInsets.only(left: 50),
+              child:Row(
+              children: [
+                Text(appData.data["name"], style:TextStyle(
+                fontSize:30,
+                color:Colors.white
+                 ) 
+                ),
+                Icon(Icons.location_on, color:Colors.white),
+
+                Text(appData.data["sys"]["country"], style:TextStyle(
+                  color:Colors.white
+                )),
+                Container(width: 50),
+                 Image.network("http://openweathermap.org/img/wn/${appData.data["weather"][0]["icon"]}@2x.png")
+               ]
+              )
+              ),
+              Container(
+              margin:EdgeInsets.only(left:75),
+              child:Row(
+                children:[
+              Text("${appData.data["main"]["temp"].toStringAsFixed(0)}°C", style:TextStyle(
+                color:Colors.white,
+                fontSize:45
+              ))
+                ]
+              )
+              )
               ]
               ):Container(
-                child: loading ? CircularProgressIndicator() : Text("")
+                margin:EdgeInsets.only(top: 30),
+                width:100,
+                height:100,
+                child: loading ? CircularProgressIndicator(
+                  color:Colors.white
+                ) : Text("")
               ),
-              TextField(
-                controller:myController
+              Container(height: 45),
+              SizedBox(
+              width:350,
+              child:TextField(
+                controller:myController,
+                decoration:InputDecoration(
+                  border:OutlineInputBorder(),
+                  hintText:"Search a city",
+                  contentPadding:EdgeInsets.all(20)
+                )
+               )
               ),
+              Container(height: 15),
               ElevatedButton(
-                child:Text("search"),
+                style:ButtonStyle(
+                  backgroundColor:MaterialStateProperty.all(Colors.white)
+                ),
+                child:Text("Search", style:TextStyle(color: Colors.black)),
                 onPressed:(){
+                  if(myController.text!=""){
                   setState((){
                     dataLoaded=false;
                     loading=true;
@@ -80,8 +127,10 @@ class _SearchScreen extends State<SearchScreen>{
                      setState((){
                       loading=false;
                       dataLoaded=true;
+                      appData.data["main"]["temp"] < 15 ? tempColor=Colors.lightBlue : tempColor=Colors.orange;
                       });
                     });
+                }
                 }
               )
             ]
