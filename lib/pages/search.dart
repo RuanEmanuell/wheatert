@@ -13,7 +13,7 @@ final appData=AppData();
 bool dataLoaded=false;
 bool loading=false;
 
-String apikey="INSERT YOUR OPEN WHEATER API KEY HERE";
+String apikey="INSERT YOUR API KEY HERE";
 
 var lat;
 var lon;
@@ -94,6 +94,8 @@ class _SearchScreen extends State<SearchScreen>{
   Widget build(BuildContext context){
 
     double height=MediaQuery.of(context).size.height;
+    double width=MediaQuery.of(context).size.width;
+    double barHeight = MediaQuery.of(context).padding.top;
 
     return Scaffold(
       body:AnimatedContainer(
@@ -104,24 +106,28 @@ class _SearchScreen extends State<SearchScreen>{
             children:[
               dataLoaded ? Column(
               children:[
-              Container(
-              margin:EdgeInsets.only(left: 50, top:50),
+              Center(child: Container(
+              margin:EdgeInsets.only(top: barHeight+20, left:20),
               child:Row(
+                 mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text("${appData.data["main"]["temp"].toStringAsFixed(0)}°C", style:TextStyle(
                 color:Colors.white,
                 fontSize:80
               )),
                 Container(
-                margin:EdgeInsets.only(left: 55),
+                margin:EdgeInsets.only(left: 18),
                 child:Image.network("http://openweathermap.org/img/wn/${appData.data["weather"][0]["icon"]}@2x.png")
                 )
                ]
               )
+              )
               ),
-              Container(
-              margin:EdgeInsets.only(left:60, bottom:height-300),
+              Center(
+              child:Container(
+              margin:EdgeInsets.only(bottom:height-300),
               child:Row(
+                 mainAxisAlignment: MainAxisAlignment.center,
                 children:[
                  Text(appData.data["name"], style:TextStyle(
                 fontSize:30,
@@ -133,6 +139,7 @@ class _SearchScreen extends State<SearchScreen>{
                   color:Colors.white
                 )),
                 ]
+              )
               )
               ),
               Column(
