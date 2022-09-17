@@ -13,7 +13,7 @@ final appData=AppData();
 bool dataLoaded=false;
 bool loading=false;
 
-String apikey="INSERT YOUR API KEY HERE";
+String apikey="e2f1e6118e15e3bd5df31fcd07c3bdfa";
 
 var lat;
 var lon;
