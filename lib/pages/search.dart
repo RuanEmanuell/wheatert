@@ -8,18 +8,22 @@ import "../stores/appdata.dart";
 import 'package:geolocator/geolocator.dart';
 
 
+
+//MOBX
 final appData=AppData();
 
+//Loading state
 bool dataLoaded=false;
 bool loading=false;
 
 String apikey="e2f1e6118e15e3bd5df31fcd07c3bdfa";
 
+//Geolocator coordinates variables
 var lat;
 var lon;
 
 
-
+//Get location via Geolocator
 Future getLocation() async{
   LocationPermission permission=await Geolocator.requestPermission();
   Position position=await Geolocator.getCurrentPosition(
@@ -30,7 +34,7 @@ Future getLocation() async{
 }
 
 
-
+//Fetch data from OpenWheater
 Future getData() async{
   http.Response response=await http.get(Uri.parse("https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apikey}&units=metric"));
 
@@ -50,7 +54,7 @@ class SearchScreen extends StatefulWidget{
 
 class _SearchScreen extends State<SearchScreen>{ 
 
-
+  //Defining the default variable for the app's color
   var tempColor=Color.fromARGB(255, 73, 73, 73);
 
   void initState(){
@@ -63,17 +67,18 @@ class _SearchScreen extends State<SearchScreen>{
 
     getLocation();
 
-
+    //Wait 5 seconds to fetch the data and assure lat and lon aren't null
     Future.delayed(Duration(seconds: 5),(){
       getData();
     });
 
-
+    //Wait 2 more seconds to display the data
      Future.delayed(Duration(seconds:7),(){
       setState((){
       loading=false;
       dataLoaded=true;
 
+      //Decide the color based on the temperature
       appData.data["main"]["temp"]<=14.99 ? tempColor=Color.fromARGB(255, 152, 197, 255):tempColor;
       appData.data["main"]["temp"]>15 ?tempColor=Color.fromARGB(255, 90, 159, 248):tempColor;
       appData.data["main"]["temp"]>25 ? tempColor=Color.fromARGB(255, 253, 186, 0):tempColor;
@@ -93,6 +98,8 @@ class _SearchScreen extends State<SearchScreen>{
   @override
   Widget build(BuildContext context){
 
+
+    //Get the height, width and status bar height of the device
     double height=MediaQuery.of(context).size.height;
     double width=MediaQuery.of(context).size.width;
     double barHeight = MediaQuery.of(context).padding.top;
