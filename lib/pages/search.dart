@@ -15,8 +15,9 @@ final appData=AppData();
 //Loading state
 bool dataLoaded=false;
 bool loading=false;
+bool error=false;
 
-String apikey="INSERT YOUR API KEY HERE";
+String apikey="TYPE YOUR OPEN WHEATER API KEY HERE"; //Remember to change it 
 
 //Geolocator coordinates variables
 var lat;
@@ -52,7 +53,9 @@ class SearchScreen extends StatefulWidget{
   _SearchScreen createState()=>_SearchScreen();
 }
 
-class _SearchScreen extends State<SearchScreen>{ 
+class _SearchScreen extends State<SearchScreen> with TickerProviderStateMixin{ 
+
+  late AnimationController animationController;
 
   //Defining the default variable for the app's color
   var tempColor=Color.fromARGB(255, 73, 73, 73);
@@ -72,8 +75,8 @@ class _SearchScreen extends State<SearchScreen>{
       getData();
     });
 
-    //Wait 2 more seconds to display the data
-     Future.delayed(Duration(seconds:7),(){
+    //Wait 3 more seconds to display the data
+     Future.delayed(Duration(seconds:8),(){
       setState((){
       loading=false;
       dataLoaded=true;
@@ -87,21 +90,31 @@ class _SearchScreen extends State<SearchScreen>{
       });
      });
 
-  
-
-
-  
-    
   }
    
 
   @override
   Widget build(BuildContext context){
 
+      animationController=AnimationController(
+        vsync: this,
+       duration:Duration(seconds: 4),
+       )..repeat(reverse: true);
 
-    //Get the height, width and status bar height of the device
+      late final Animation<double>_animation=CurvedAnimation(
+        curve:Curves.elasticOut,
+        parent:animationController
+      );
+
+      @override
+      void dispose(){
+        super.dispose();
+        animationController.dispose();
+      }
+
+      
+    //Get the height and status bar height of the device
     double height=MediaQuery.of(context).size.height;
-    double width=MediaQuery.of(context).size.width;
     double barHeight = MediaQuery.of(context).padding.top;
 
     return Scaffold(
@@ -124,7 +137,10 @@ class _SearchScreen extends State<SearchScreen>{
               )),
                 Container(
                 margin:EdgeInsets.only(left: 18),
-                child:Image.network("http://openweathermap.org/img/wn/${appData.data["weather"][0]["icon"]}@2x.png")
+                child:ScaleTransition(
+                  scale:_animation,
+                  child:Image.network("http://openweathermap.org/img/wn/${appData.data["weather"][0]["icon"]}@2x.png")
+                )
                 )
                ]
               )
@@ -169,7 +185,7 @@ class _SearchScreen extends State<SearchScreen>{
                 margin:EdgeInsets.only(top: height/2-20),
                 width:100,
                 height:100,
-                child: loading ? CircularProgressIndicator(color:Colors.white) : Text("")
+                child: loading ? CircularProgressIndicator(color:Colors.white) :Text("")
               )
             ]
           )
