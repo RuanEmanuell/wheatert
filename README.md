@@ -19,3 +19,4 @@ mobx_codegen
 ### Here's a screenshot of the project running:
 ![Screenshot_149](https://user-images.githubusercontent.com/113607857/191507558-e2fd32de-571d-45f3-a7a3-a6b2d45d25a0.png)
 
+### This project was made only on porpuse of studying.
