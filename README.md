@@ -7,13 +7,13 @@ A real time Wheater tracker, made in Flutter using the OpenWheater API and Geolo
 You will need <a href="https://docs.flutter.dev/get-started/install">Flutter</a>, after booting up on your emulator or device and <a href="https://docs.flutter.dev/get-started/codelab">starting a new Flutter project</a>, you will transfer the files of this repository to the <strong>lib</strong> folder of your Flutter project.
 
 In order to run this project you will need the following DEPENDENCIES on your <strong>pubsbec.yaml</strong> file:
-flutter_mobx
-mobx
-http
+flutter_mobx,
+mobx,
+http,
 geolocator
 
 And the following DEV DEPENDENCIES:
-build_runner
+build_runner,
 mobx_codegen
 
 ### Here's a screenshot of the project running:
