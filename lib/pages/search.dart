@@ -55,11 +55,8 @@ class SearchScreen extends StatefulWidget{
 
 class _SearchScreen extends State<SearchScreen> with TickerProviderStateMixin{ 
 
-<<<<<<< HEAD
   late AnimationController animationController;
 
-=======
->>>>>>> ad77d245609416cbf6135d516b085dc8ae142164
   //Defining the default variable for the app's color
   var tempColor=Color.fromARGB(255, 73, 73, 73);
 
@@ -78,13 +75,8 @@ class _SearchScreen extends State<SearchScreen> with TickerProviderStateMixin{
       getData();
     });
 
-<<<<<<< HEAD
     //Wait 3 more seconds to display the data
      Future.delayed(Duration(seconds:8),(){
-=======
-    //Wait 2 more seconds to display the data
-     Future.delayed(Duration(seconds:7),(){
->>>>>>> ad77d245609416cbf6135d516b085dc8ae142164
       setState((){
       loading=false;
       dataLoaded=true;
@@ -104,7 +96,6 @@ class _SearchScreen extends State<SearchScreen> with TickerProviderStateMixin{
   @override
   Widget build(BuildContext context){
 
-<<<<<<< HEAD
       animationController=AnimationController(
         vsync: this,
        duration:Duration(seconds: 4),
@@ -123,10 +114,6 @@ class _SearchScreen extends State<SearchScreen> with TickerProviderStateMixin{
 
       
     //Get the height and status bar height of the device
-=======
-
-    //Get the height, width and status bar height of the device
->>>>>>> ad77d245609416cbf6135d516b085dc8ae142164
     double height=MediaQuery.of(context).size.height;
     double barHeight = MediaQuery.of(context).padding.top;
 
