@@ -1,3 +1,5 @@
+Veja a versão em Português <a href="README-ptbr.md">aqui</a>
+
 ### WheateRT
 
 A real time Wheater tracker, made in Flutter using the OpenWheater API and Geolocator.
